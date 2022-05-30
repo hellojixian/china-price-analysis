@@ -1,7 +1,8 @@
 
 const request = require('ajax-request');
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database(':memory:');
+const config = require('./config');
+const db = new sqlite3.Database(config.DBFile);
 
 const DataSource = 'http://price.mofcom.gov.cn'
 const productCategory = {

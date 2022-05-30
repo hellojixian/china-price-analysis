@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "fetch": "node fetch.js",
+    "extract": "node extract.js"
   },
   "author": "",
   "license": "ISC",
