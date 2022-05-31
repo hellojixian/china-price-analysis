@@ -4,11 +4,26 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
       const loadData = async () => {
-        const response = await axios('https://raw.githubusercontent.com/hellojixian/china-price-analysis/main/export/test.json');
+        const response = await axios('https://raw.githubusercontent.com/hellojixian/china-price-analysis/main/export/test.json?rand=1');
         const remoteData = response.data;
         const data = new google.visualization.DataTable();
-        for (const col of remoteData.columns) data.addColumn('string', col);
-        data.addRows(remoteData.rows)
+        for (const col of remoteData.columns) {
+          if (col == '日期') {
+            data.addColumn('date', new Date(col));
+          } else {
+            data.addColumn('number', col);
+          }
+        }
+        for (const row of remoteData.rows){
+          for (const i in row) {
+            if (i==0) {
+              row[i] = new Date(row[i]);
+            } else {
+              row[i] = parseFloat(row[i]);
+            }
+          }
+          data.addRows([row]);
+        }
         return data;
       }
 

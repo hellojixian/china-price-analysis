@@ -41,12 +41,12 @@ const tradeDateSQL = `select distinct date as date from price where date>'${star
   const dateList = await new Promise(resolve => db.all(tradeDateSQL, async (err, rows) => resolve(rows)));
   for (const date of dateList){
     const currentDate = date['date'];
-    let row = [currentDate];
+    let row = [new Date(currentDate)];
     let hasData = false;
     for (const product of productList) {
       let data = '';
       if (dataFrame[product['name']][currentDate]){
-        data = dataFrame[product['name']][currentDate]['value'].toFixed(2);
+        data = parseFloat(dataFrame[product['name']][currentDate]['value'].toFixed(2));
         hasData = true;
       }
       row = row.concat(data);
