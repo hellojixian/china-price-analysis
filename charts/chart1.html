@@ -18,32 +18,63 @@
           for (const i in row) {
             if (i==0) {
               row[i] = new Date(row[i]);
+            }else {
+              row[i] = parseFloat(row[i])-100;
             }
           }
-          data.addRows([row]);
+          data.addRow(row);
         }
+        const removeColumns = ['大葱','猪肉','仔猪','香菇'];
+        for (const colum of removeColumns) data.removeColumn(data.getColumnIndex(colum));
         return data;
       }
 
       const drawChart = async () => {
         const data = await loadData();
+        // const chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        // chart.draw(data, options);
+        const chart = new google.visualization.ChartWrapper({
+          chartType: 'LineChart',
+          containerId: 'curve_chart',
+          options: {
+            title: '农产品 现货',
+            subtitle: '数据来源国家价格网',
+            legend: { position: 'top' },
+            chartArea: {
+              width: '92%',
+              height: '80%'
+            }
+          },
+        })
 
-        var options = {
-          title: 'Company Performance',
-          curveType: 'function',
-          legend: { position: 'bottom' }
-        };
+        const control =  new google.visualization.ControlWrapper({
+          controlType: 'ChartRangeFilter',
+          containerId: 'curve_chart_control',
+          options: {
+            filterColumnIndex: 0,
+            ui: {
+               chartType: 'LineChart',
+               chartOptions: {
+                chartArea: {width: '92%'},
+              },
+            },
+          },
+          state: {range: {start: data.getValue(data.getNumberOfRows()-150, 0), end: data.getValue(data.getNumberOfRows()-100, 0)}}
+        })
 
-        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-
-        chart.draw(data, options);
+        const dashboard = new google.visualization.Dashboard(document.getElementById('dashboard'));
+        dashboard.bind(control, chart);
+        dashboard.draw(data);
       }
 
-      google.charts.load('current', {'packages':['corechart']});
+      google.charts.load('current', {'packages':['corechart', 'controls']});
       google.charts.setOnLoadCallback(drawChart);
     </script>
   </head>
   <body>
-    <div id="curve_chart" style="width: 1400px; height: 500px"></div>
+    <div id='dashboard'>
+      <div id="curve_chart" style="width: 1000px; height: 600px"></div>
+      <div id="curve_chart_control" style="width: 1000px; height: 100px"></div>
+    </div>
   </body>
 </html>
