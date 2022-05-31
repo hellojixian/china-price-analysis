@@ -4,18 +4,16 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
       const loadData = async () => {
-        const data = await axios('https://raw.githubusercontent.com/hellojixian/china-price-analysis/main/export/test.csv');
+        const response = await axios('https://raw.githubusercontent.com/hellojixian/china-price-analysis/main/export/test.json');
+        const remoteData = response.data;
+        const data = new google.visualization.DataTable();
+        for (const col of remoteData.columns) data.addColumn('string', col);
+        data.addRows(remoteData.rows)
+        return data;
       }
 
       const drawChart = async () => {
-        var data = google.visualization.arrayToDataTable([
-          ['Year', 'Sales', 'Expenses'],
-          ['2004',  1000,      400],
-          ['2005',  1170,      460],
-          ['2006',  660,       1120],
-          ['2007',  1030,      540]
-        ]);
-        const rdata = await loadData();
+        const data = await loadData();
 
         var options = {
           title: 'Company Performance',

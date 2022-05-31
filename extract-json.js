@@ -51,7 +51,7 @@ const tradeDateSQL = `select distinct date as date from price where date>'${star
       }
       row = row.concat(data);
     }
-    if(hasData) exportData.rows = exportData.rows.concat(row);
+    if(hasData) exportData.rows = exportData.rows.concat([row]);
   }
   const exportedData = JSON.stringify(exportData);
   console.log(exportedData);
